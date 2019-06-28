@@ -8,20 +8,6 @@
           "description": "Name of Cosmos DB to create"
         }
       },
-      "cosmosApiType": {
-        "type": "string",
-        "defaultValue": "SQL",
-        "metadata": {
-          "description": "API type for Cosmos DB"
-        }
-      },
-      "cosmosConsistencyLevel": {
-        "type": "string",
-        "defaultValue": "?",
-        "metadata": {
-          "description": "Consistency level for Cosmos DB"
-        }
-      },
       "cosmosIpWhitelist": {
         "type": "string",
         "defaultValue": "",
@@ -49,10 +35,10 @@
               "value": "[parameters('cosmosDbName')]"
             },
             "cosmosApiType": {
-              "value": "[parameters('cosmosApiType')]"
+              "value": "SQL"
             },
             "defaultConsistencyLevel": {
-              "value": "[parameters('cosmosConsistencyLevel')]"
+              "value": "Eventual"
             },
             "additionalIpAddresses": {
               "value": "[parameters('cosmosIpWhitelist')]"
