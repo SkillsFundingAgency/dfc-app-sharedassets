@@ -38,7 +38,7 @@
               "value": "SQL"
             },
             "defaultConsistencyLevel": {
-              "value": "Eventual"
+              "value": "Strong"
             },
             "additionalIpAddresses": {
               "value": "[parameters('cosmosIpWhitelist')]"
