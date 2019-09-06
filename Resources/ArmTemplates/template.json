@@ -2,6 +2,25 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "aseHostingEnvironmentName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "aseOutboundIpAddress": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "aseResourceGroup": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "aspSize": {
+            "type": "string",
+            "defaultValue": "2"
+        },
+        "aspTier": {
+            "type": "string"
+        },
         "cosmosIpWhitelist": {
             "type": "string",
             "defaultValue": "",
@@ -9,19 +28,52 @@
                 "description": "Any additional IP addresses to add to the Cosmos DB IP Range Filter in addition to the default addresses.  If more than 1 address is included they should be seperated by a comma, eg: 11.111.123.134,12.134.114.115"
             }
         },
-        "Environment": {
+        "environment": {
             "type": "string"
         }
     },
     "variables": {
+        "appServicePlanName": "[concat(variables('ResourcePrefix'), '-asp')]",
         "cosmosDbName": "[concat(variables('ResourcePrefix'), '-cdb')]",
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
-        "resourcePrefix": "[tolower(concat('dfc-', parameters('Environment'), '-app-shared'))]",
+        "resourcePrefix": "[tolower(concat('dfc-', parameters('environment'), '-app-shared'))]",
         "servicebusName": "[concat(variables('ResourcePrefix'), '-ns')]",
-        "servicebusSku": "[if(or(equals(parameters('Environment'), 'PP'), equals(parameters('Environment'), 'PRD')), 'Premium', 'Standard')]",
-        "storageAccountName": "[tolower(concat('dfc', parameters('Environment'), 'appsharedstr'))]"
+        "servicebusSku": "[if(or(equals(parameters('environment'), 'PP'), equals(parameters('Environment'), 'PRD')), 'Premium', 'Standard')]",
+        "storageAccountName": "[tolower(concat('dfc', parameters('environment'), 'appsharedstr'))]"
     },
     "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('AppServicePlanName')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'app-service-plan.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServicePlanName": {
+                        "value": "[variables('AppServicePlanName')]"
+                    },
+                    "aseHostingEnvironmentName": {
+                        "value": "[parameters('AseHostingEnvironmentName')]"
+                    },
+                    "aseResourceGroup": {
+                        "value": "[parameters('aseResourceGroup')]"
+                    },
+                    "aspSize": {
+                        "value": "[parameters('AspSize')]"
+                    },
+                    "aspInstances": {
+                        "value": 1
+                    },
+                    "nonASETier": {
+                        "value": "[parameters('AspTier')]"
+                    }
+                }
+            }
+        },
         {
             "name": "appSharedCosmos",
             "type": "Microsoft.Resources/deployments",
