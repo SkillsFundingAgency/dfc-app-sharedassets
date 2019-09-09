@@ -14,6 +14,9 @@
             "type": "string",
             "defaultValue": ""
         },
+        "aspInstances": {
+            "type": "int"
+        },
         "aspSize": {
             "type": "string"
         },
@@ -53,22 +56,22 @@
                 },
                 "parameters": {
                     "appServicePlanName": {
-                        "value": "[variables('AppServicePlanName')]"
+                        "value": "[variables('appServicePlanName')]"
                     },
                     "aseHostingEnvironmentName": {
-                        "value": "[parameters('AseHostingEnvironmentName')]"
+                        "value": "[parameters('aseHostingEnvironmentName')]"
                     },
                     "aseResourceGroup": {
                         "value": "[parameters('aseResourceGroup')]"
                     },
                     "aspSize": {
-                        "value": "[parameters('AspSize')]"
+                        "value": "[parameters('aspSize')]"
                     },
                     "aspInstances": {
-                        "value": 2
+                        "value": "[parameters('aspInstances')]"
                     },
                     "nonASETier": {
-                        "value": "[parameters('AspTier')]"
+                        "value": "[parameters('aspTier')]"
                     }
                 }
             }
