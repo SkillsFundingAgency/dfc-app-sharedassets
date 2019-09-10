@@ -18,7 +18,7 @@
             "value": __CosmosDbDatabaseExists__
         },
         "jobprofileDatabaseOfferThroughput": {
-            "value": "__JobprofileDatabaseOfferThroughput__"
+            "value": __JobprofileDatabaseOfferThroughput__
         }
     }
 }
