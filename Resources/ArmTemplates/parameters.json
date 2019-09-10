@@ -11,6 +11,9 @@
         "aspTier": {
             "value": "__AspTier__"
         },
+        "cosmosDbName": {
+            "value": "__cosmosDbName__"
+        },
         "environment": {
             "value": "__ReleaseEnvironmentName__"
         },
