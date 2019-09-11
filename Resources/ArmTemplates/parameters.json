@@ -18,7 +18,7 @@
             "value": "__ReleaseEnvironmentName__"
         },
         "jobprofileDatabaseNeedsCreation": {
-            "value": __CosmosDbDatabaseExists__
+            "value": __CosmosDbDatabaseDoesntExist__
         },
         "jobprofileDatabaseOfferThroughput": {
             "value": __JobprofileDatabaseOfferThroughput__
