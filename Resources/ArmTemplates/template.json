@@ -134,10 +134,10 @@
                         "value": true
                     },
                     "offerThroughput": {
-                        "value": "[int(parameters('jobprofileDatabaseOfferThroughput'))]"
+                        "value": "[parameters('jobprofileDatabaseOfferThroughput')]"
                     },
                     "databaseNeedsCreation": {
-                        "value": "[bool(parameters('jobprofileDatabaseNeedsCreation'))]"
+                        "value": "[parameters('jobprofileDatabaseNeedsCreation')]"
                     }
                 }
             }
