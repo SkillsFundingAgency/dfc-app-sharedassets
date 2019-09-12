@@ -21,14 +21,9 @@ jobs:
     - visualstudio
 
   steps:
-#  - template: AzureDevOpsTemplates/Build/dfc-arm-build.yml@dfc-devops
-#    parameters:
-#      ArmTemplateRoot: $(ArmTemplateRoot)
-  - task: CopyFiles@2
-    displayName: 'Copy Arm Templates to Staging'
-    inputs:
-      SourceFolder: '$(ArmTemplateRoot)\'
-      TargetFolder: $(build.artifactstagingdirectory)/Azure/ArmTemplates
+  - template: AzureDevOpsTemplates/Build/dfc-arm-build.yml@dfc-devops
+    parameters:
+      ArmTemplateRoot: $(ArmTemplateRoot)
   - task: PublishBuildArtifacts@1
     displayName: Publish Artifact
     inputs:
