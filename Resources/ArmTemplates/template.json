@@ -26,13 +26,6 @@
         "cosmosDbName": {
             "type": "string"
         },
-        "cosmosIpWhitelist": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "Any additional IP addresses to add to the Cosmos DB IP Range Filter in addition to the default addresses.  If more than 1 address is included they should be seperated by a comma, eg: 11.111.123.134,12.134.114.115"
-            }
-        },
         "environment": {
             "type": "string"
         },
@@ -105,7 +98,7 @@
                         "value": "Strong"
                     },
                     "additionalIpAddresses": {
-                        "value": "[parameters('cosmosIpWhitelist')]"
+                        "value": "[parameters('aseOutboundIpAddress')]"
                     },
                     "allowConnectionsFromAzureDataCenters": {
                         "value": false
