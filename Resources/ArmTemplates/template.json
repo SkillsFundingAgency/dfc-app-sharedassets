@@ -106,6 +106,9 @@
                     },
                     "additionalIpAddresses": {
                         "value": "[parameters('cosmosIpWhitelist')]"
+                    },
+                    "allowConnectionsFromAzureDataCenters": {
+                        "value": false
                     }
                 }
             }
