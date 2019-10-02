@@ -160,7 +160,7 @@
             }
         },
         {
-            "name": "appSharedServiceBusIpFilters",
+            "name": "[concat('appSharedServiceBusIpFilters-', copyIndex())]",
             "type": "Microsoft.Resources/deployments",
             "condition": "[equals(length(parameters('aseOutboundIpAddress')), 0)]",
             "apiVersion": "2017-05-10",
