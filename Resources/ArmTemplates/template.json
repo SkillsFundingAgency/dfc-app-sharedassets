@@ -167,7 +167,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat('https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/NCSD-1757-AddServiceBusIpFilterTemplate/ArmTemplates/','ServiceBus/servicebus-ipfilter.json')]",
+                    "uri": "[concat(variables('deploymentUrlBase'),'ServiceBus/servicebus-ipfilter.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
