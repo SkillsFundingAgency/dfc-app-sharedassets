@@ -18,7 +18,7 @@
             "value": "__AspTier__"
         },
         "cosmosDbName": {
-            "value": "__cosmosDbName__"
+            "value": "__appSharedCosmosDBName__"
         },
         "environment": {
             "value": "__ReleaseEnvironmentName__"
