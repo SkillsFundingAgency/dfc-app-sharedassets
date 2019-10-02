@@ -8,6 +8,9 @@
         "aseOutboundIpAddress": {
             "value": "__AseOutboundIpAddress__"
         },
+        "aseResourceGroup": {
+            "value": "__sharedResourceGroup__"
+        },
         "aspInstances": {
             "value": __AspInstances__
         },
