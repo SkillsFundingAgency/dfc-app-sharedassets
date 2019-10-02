@@ -38,6 +38,7 @@
     },
     "variables": {
         "appServicePlanName": "[concat(variables('ResourcePrefix'), '-asp')]",
+        "allowedIpAddresses": "[concat('0.0.0.0,104.42.195.92,40.76.54.131,52.176.6.30,52.169.50.45,52.187.184.26,', parameters('aseOutboundIpAddress'))]",
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/master/ArmTemplates/",
         "resourcePrefix": "[tolower(concat('dfc-', parameters('environment'), '-app-sharedresources'))]",
         "servicebusName": "[concat(variables('ResourcePrefix'), '-ns')]",
@@ -157,6 +158,37 @@
                     }
                 }
             }
+        },
+        {
+            "name": "appSharedServiceBusIpFilters",
+            "type": "Microsoft.Resources/deployments",
+            "condition": "[equals(length(parameters('aseOutboundIpAddress')), 0)]",
+            "apiVersion": "2017-05-10",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat('https://raw.githubusercontent.com/SkillsFundingAgency/dfc-devops/NCSD-1757-AddServiceBusIpFilterTemplate/ArmTemplates/','ServiceBus/servicebus-ipfilter.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "action": {
+                        "value": "Accept"
+                    },
+                    "ipAddress": {
+                        "value": "[variables('allowedIpAddresses')[copyIndex()]]"
+                    },
+                    "servicebusName": {
+                        "value": "[variables('servicebusName')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "appSharedServiceBus"
+            ],
+             "copy": {
+                 "name": "ipFilterRuleCopy",
+                 "count": "[length(variables('allowedIpAddresses'))]"
+             }
         },
         {
             "name": "appSharedStorageAccount",
