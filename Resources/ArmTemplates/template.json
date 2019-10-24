@@ -242,7 +242,7 @@
                 },
                 "parameters": {
                     "authorizationRuleName": {
-                        "value": "[concat('monitor-'variables('cmsTopicName')]"
+                        "value": "[concat('monitor-',variables('cmsTopicName'))]"
                     },
                     "topicName": {
                         "value": "[variables('cmsTopicName')]"
