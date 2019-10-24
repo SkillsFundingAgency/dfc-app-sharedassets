@@ -231,7 +231,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[variables('cmsTopicName')]",
+            "name": "[concat('monitor-',variables('cmsTopicName'))]",
             "type": "Microsoft.Resources/deployments",
             "condition" : "[not(variables('productionEnvironment'))]",
             "properties": {
