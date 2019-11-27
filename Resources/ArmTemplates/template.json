@@ -214,6 +214,9 @@
             "apiVersion": "2017-05-10",
             "name": "[variables('cmsTopicName')]",
             "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "appSharedServiceBus"
+            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -234,6 +237,9 @@
             "apiVersion": "2017-05-10",
             "name": "[variables('cmsTopicName-draft')]",
             "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "appSharedServiceBus"
+            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -256,6 +262,7 @@
             "type": "Microsoft.Resources/deployments",
             "condition": "[not(variables('productionEnvironment'))]",
             "dependsOn": [
+                "appSharedServiceBus",
                 "[variables('cmsTopicName')]"
             ],
             "properties": {
@@ -290,6 +297,7 @@
             "type": "Microsoft.Resources/deployments",
             "condition": "[not(variables('productionEnvironment'))]",
             "dependsOn": [
+                "appSharedServiceBus",
                 "[variables('cmsTopicName-draft')]"
             ],
             "properties": {
