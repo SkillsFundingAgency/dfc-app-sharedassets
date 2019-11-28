@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "apimResourceGroup": {
-            "value": "dfc-foo-shared-rg"
+            "value": "dfc-test-template-rg"
         },
         "apimServiceName": {
             "value": "dfc-foo-shared-apim"
