@@ -3,10 +3,10 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "apimResourceGroup": {
-            "value": "__ApimServiceName__"
+            "value": "__SharedResourceGroupName__"
         },
         "apimServiceName": {
-            "value": "__SharedResourceGroupName__"
+            "value": "__ApimServiceName__"
         },
         "aseHostingEnvironmentName": {
             "value": "__AseServiceName__"
