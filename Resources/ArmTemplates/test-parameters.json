@@ -24,7 +24,7 @@
             "value": 400
         },
         "serviceBusFirewallIpAddresses": {
-            "value": ""
+            "value": []
         }
     }
 }
