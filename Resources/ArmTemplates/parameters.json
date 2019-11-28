@@ -33,7 +33,7 @@
             "value": __JobprofileDatabaseOfferThroughput__
         },
         "serviceBusFirewallIpAddresses": {
-            "value": "__serviceBusFirewallIpAddresses__"
+            "value": __serviceBusFirewallIpAddresses__
         }
     }
 }
