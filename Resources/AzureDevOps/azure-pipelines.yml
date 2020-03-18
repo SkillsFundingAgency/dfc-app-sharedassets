@@ -16,7 +16,7 @@ jobs:
 - job: BuildAndTestArmTemplate
   displayName: BuildAndTestArmTemplate
   pool:
-    name: windows-latest
+    vmImage: 'windows-latest'
     demands:
     - msbuild
     - visualstudio
