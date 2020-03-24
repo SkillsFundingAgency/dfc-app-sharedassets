@@ -100,7 +100,7 @@
         "storageAccountName": "[tolower(concat('dfc', parameters('environment'), 'appsharedstr'))]",
         "apimJobProfilesProductDisplayName": "Job Profiles",
         "apimDysacProductDisplayName": "Discover Skills and Careers",
-        "addDevelopersGroupToJPProduct": "[equals(tolower(parameters('environment')), 'oat')]",
+        "addDevelopersGroupToProduct": "[equals(tolower(parameters('environment')), 'oat')]",
         "MonitoringAppServicePlanName": "[concat(variables('ResourcePrefix'), '-mon-asp')]",
         "MonitoringAppInsightsName": "[concat(variables('ResourcePrefix'), '-mon-ai')]",
         "MonitoringFunctionAppName": "[concat(variables('ResourcePrefix'), '-mon-fa')]",
@@ -396,7 +396,7 @@
                         "value": false
                     },
                     "addDevelopers": {
-                        "value": "[variables('addDevelopersGroupToJPProduct')]"
+                        "value": "[variables('addDevelopersGroupToProduct')]"
                     },
                     "apimServiceName": {
                         "value": "[parameters('apimServiceName')]"
@@ -450,7 +450,7 @@
                         "value": false
                     },
                     "addDevelopers": {
-                        "value": "[variables('addDevelopersGroupToJPProduct')]"
+                        "value": "[variables('addDevelopersGroupToProduct')]"
                     },
                     "apimServiceName": {
                         "value": "[parameters('apimServiceName')]"
