@@ -35,6 +35,20 @@
         "environment": {
             "type": "string"
         },
+         "cmsTopicName": {
+            "type": "string",
+            "defaultValue": "cms-messages",
+            "metadata": {
+                "description": "Name of CMS messages topic"
+            }
+        },
+        "cmsSubscriptionSqlFilter": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Filter to apply to subscription (no filter applied if left blank)"
+            }
+        },
         "jobprofileDatabaseNeedsCreation": {
             "type": "bool"
         },
@@ -385,10 +399,13 @@
                         "value": "[variables('servicebusName')]"
                     },
                     "serviceBusTopicName": {
-                        "value": "[variables('TopicsToCreate')]"
+                        "value": "[parameters('cmsTopicName')]"
                     },
                     "serviceBusTopicSubscriptionName": {
                         "value": "[variables('cmsSubscriptionName')]"
+                    },
+                    "subscriptionSqlFilter": {
+                        "value": "[parameters('cmsSubscriptionSqlFilter')]"
                     }
                 }
             }
