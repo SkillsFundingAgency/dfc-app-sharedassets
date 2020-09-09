@@ -35,9 +35,6 @@
         "environment": {
             "type": "string"
         },
-         "appSharedResourceGroup": {
-            "type": "string"
-        },
          "cmsTopicName": {
             "type": "string",
             "defaultValue": "cms-messages",
@@ -381,7 +378,6 @@
             "apiVersion": "2017-05-10",
             "name": "[variables('cmsSubscriptionName')]",
             "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('appSharedResourceGroup')]",
             "properties": {
                 "mode": "Incremental",
                 "lockDuration": "PT1M",

@@ -14,9 +14,6 @@
         "aseOutboundIpAddress": {
             "value": "__AseOutboundIpAddress__"
         },
-        "aseResourceGroup": {
-            "value": "__aseResourceGroup__"
-        },
         "aspInstances": {
             "value": __AspInstances__
         },
