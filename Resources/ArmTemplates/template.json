@@ -35,6 +35,23 @@
         "environment": {
             "type": "string"
         },
+         "appSharedResourceGroup": {
+            "type": "string"
+        },
+         "cmsTopicName": {
+            "type": "string",
+            "defaultValue": "cms-messages",
+            "metadata": {
+                "description": "Name of CMS messages topic"
+            }
+        },
+        "cmsSubscriptionSqlFilter": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Filter to apply to subscription (no filter applied if left blank)"
+            }
+        },
         "jobprofileDatabaseNeedsCreation": {
             "type": "bool"
         },
@@ -105,6 +122,7 @@
         "MonitoringAppInsightsName": "[concat(variables('ResourcePrefix'), '-mon-ai')]",
         "MonitoringFunctionAppName": "[concat(variables('ResourcePrefix'), '-mon-fa')]",
         "ActionGroupName": "[concat(variables('ResourcePrefix'), '-actgrp')]",
+        "cmsSubscriptionName": "forward-to-draft1",
         "TopicsToCreate": [
             "cms-messages",
             "cms-messages-draft",
@@ -357,6 +375,48 @@
             "copy": {
                 "name": "topicAuthRuleCopy",
                 "count": "[length(variables('TopicsToCreate'))]"
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('cmsSubscriptionName')]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('appSharedResourceGroup')]",
+            "condition": "[not(variables('productionEnvironment'))]",
+            "dependsOn": [
+                "appSharedServiceBus",
+                "topicCopy"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": false,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "forwardto": "cms-messages-draft",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'), 'ServiceBus/servicebus-topic-subscription.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "serviceBusNamespaceName": {
+                        "value": "[variables('servicebusName')]"
+                    },
+                    "serviceBusTopicName": {
+                        "value": "[parameters('cmsTopicName')]"
+                    },
+                    "serviceBusTopicSubscriptionName": {
+                        "value": "[variables('cmsSubscriptionName')]"
+                    },
+                    "subscriptionSqlFilter": {
+                        "value": "[parameters('cmsSubscriptionSqlFilter')]"
+                    }
+                }
             }
         },
         {

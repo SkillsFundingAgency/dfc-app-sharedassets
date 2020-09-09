@@ -32,6 +32,15 @@
         "environment": {
             "value": "__ReleaseEnvironmentName__"
         },
+        "appSharedResourceGroup": {
+            "value": "__appSharedResourceGroup__"
+        },
+        "cmsTopicName": {
+            "value": "__cmsTopicName__"
+        },
+        "cmsSubscriptionSqlFilter": {
+            "value": "__cmsSubscriptionSqlFilter__"
+        },
         "jobprofileDatabaseNeedsCreation": {
             "value": __CosmosDbDatabaseDoesntExist__
         },

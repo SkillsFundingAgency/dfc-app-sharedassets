@@ -23,6 +23,9 @@
         "environment": {
             "value": "FOO"
         },
+        "appSharedResourceGroup": {
+            "value": "dfc-dev-app-sharedresources-rg"
+        },
         "jobprofileDatabaseNeedsCreation": {
             "value": false
         },
