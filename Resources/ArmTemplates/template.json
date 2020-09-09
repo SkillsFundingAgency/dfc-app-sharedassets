@@ -364,10 +364,6 @@
             "apiVersion": "2017-05-10",
             "name": "[variables('cmsSubscriptionName')]",
             "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "appSharedServiceBus",
-                "topicCopy"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "lockDuration": "PT1M",
