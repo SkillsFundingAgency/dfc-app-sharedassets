@@ -35,20 +35,6 @@
         "environment": {
             "type": "string"
         },
-         "cmsTopicName": {
-            "type": "string",
-            "defaultValue": "cms-messages",
-            "metadata": {
-                "description": "Name of CMS messages topic"
-            }
-        },
-        "cmsSubscriptionSqlFilter": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "Filter to apply to subscription (no filter applied if left blank)"
-            }
-        },
         "jobprofileDatabaseNeedsCreation": {
             "type": "bool"
         },
@@ -378,6 +364,10 @@
             "apiVersion": "2017-05-10",
             "name": "[variables('cmsSubscriptionName')]",
             "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "appSharedServiceBus",
+                "topicCopy"
+            ],
             "properties": {
                 "mode": "Incremental",
                 "lockDuration": "PT1M",
@@ -399,13 +389,10 @@
                         "value": "[variables('servicebusName')]"
                     },
                     "serviceBusTopicName": {
-                        "value": "[parameters('cmsTopicName')]"
+                        "value": "[variables('TopicsToCreate')]"
                     },
                     "serviceBusTopicSubscriptionName": {
                         "value": "[variables('cmsSubscriptionName')]"
-                    },
-                    "subscriptionSqlFilter": {
-                        "value": "[parameters('cmsSubscriptionSqlFilter')]"
                     }
                 }
             }
