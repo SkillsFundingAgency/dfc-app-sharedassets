@@ -35,20 +35,6 @@
         "environment": {
             "type": "string"
         },
-         "cmsTopicName": {
-            "type": "string",
-            "defaultValue": "cms-messages",
-            "metadata": {
-                "description": "Name of CMS messages topic"
-            }
-        },
-        "cmsSubscriptionSqlFilter": {
-            "type": "string",
-            "defaultValue": "",
-            "metadata": {
-                "description": "Filter to apply to subscription (no filter applied if left blank)"
-            }
-        },
         "jobprofileDatabaseNeedsCreation": {
             "type": "bool"
         },
@@ -119,12 +105,14 @@
         "MonitoringAppInsightsName": "[concat(variables('ResourcePrefix'), '-mon-ai')]",
         "MonitoringFunctionAppName": "[concat(variables('ResourcePrefix'), '-mon-fa')]",
         "ActionGroupName": "[concat(variables('ResourcePrefix'), '-actgrp')]",
-        "cmsSubscriptionName": "cms-app-test",
         "TopicsToCreate": [
             "cms-messages",
             "cms-messages-draft",
             "job-profile-refresh",
             "job-profile-refresh-draft"
+        ],
+        "SubscriptionsToCreate": [
+            "cms-app-test"
         ]
     },
     "functions": [
@@ -376,8 +364,12 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "[variables('cmsSubscriptionName')]",
+            "name": "[variables('SubscriptionsToCreate')[copyIndex()]]",
             "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "appSharedServiceBus",
+                "topicCopy"
+            ],
             "properties": {
                 "mode": "Incremental",
                 "lockDuration": "PT1M",
@@ -399,15 +391,16 @@
                         "value": "[variables('servicebusName')]"
                     },
                     "serviceBusTopicName": {
-                        "value": "[parameters('cmsTopicName')]"
+                        "value": "[variables('TopicsToCreate')[copyIndex()]]"
                     },
                     "serviceBusTopicSubscriptionName": {
-                        "value": "[variables('cmsSubscriptionName')]"
-                    },
-                    "subscriptionSqlFilter": {
-                        "value": "[parameters('cmsSubscriptionSqlFilter')]"
+                        "value": "[variables('SubscriptionsToCreate')[copyIndex()]]"
                     }
                 }
+            },
+            "copy": {
+                "name": "subscriptionCopy",
+                "count": "[length(variables('SubscriptionsToCreate'))]"
             }
         },
         {
