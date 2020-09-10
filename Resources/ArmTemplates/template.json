@@ -375,9 +375,11 @@
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
                 "appSharedServiceBus",
-                "topicCopy"
+                "topicCopy",
+                "cms-messages-draft"
             ],
             "properties": {
+                "forwardTo": "cms-messages-draft",
                 "mode": "Incremental",
                 "lockDuration": "PT1M",
                 "requiresSession": false,
@@ -386,8 +388,7 @@
                 "deadLetteringOnFilterEvaluationExceptions": false,
                 "maxDeliveryCount": 10,
                 "status": "Active",
-                "forwardTo": "appSharedServiceBus/cms-messages-draft",
-                "enableBatchedOperations": false,
+                "enableBatchedOperations": true,
                 "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
                 "templateLink": {
                     "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'ServiceBus/servicebus-topic-subscription.json')]",
