@@ -379,7 +379,7 @@
                 "cms-messages-draft"
             ],
             "properties": {
-                "forwardTo": "cms-messages-draft",
+                "forwardTo": "sb://dfc-dev-app-sharedresources-ns.servicebus.windows.net/cms-messages-draft",
                 "mode": "Incremental",
                 "lockDuration": "PT1M",
                 "requiresSession": false,
