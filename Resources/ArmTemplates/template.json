@@ -119,7 +119,7 @@
             "job-profile-refresh-draft"
         ],
         "SubscriptionsToCreate": [
-            "cms-app-test"
+            "cms-app-test1"
         ]
     },
     "functions": [
@@ -238,7 +238,7 @@
         {
             "name": "appSharedServiceBus",
             "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2017-05-10",
+            "apiVersion": "2016-09-01",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -370,7 +370,7 @@
             }
         },
         {
-            "apiVersion": "2017-05-10",
+            "apiVersion": "2016-09-01",
             "name": "[variables('SubscriptionsToCreate')[copyIndex()]]",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
@@ -388,7 +388,7 @@
                 "status": "Active",
                 "enableBatchedOperations": false,
                 "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
-                "forwardTo": "sb://dfc-dev-app-sharedresources-ns.servicebus.windows.net/cms-messages-draft",
+                "forwardTo": "cms-messages-draft",
                 "templateLink": {
                     "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'ServiceBus/servicebus-topic-subscription.json')]",
                     "contentVersion": "1.0.0.0"
