@@ -48,6 +48,13 @@
             },
             "defaultValue": []
         },
+        "cmsSubscriptionSqlFilter": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Filter to apply to subscription (no filter applied if left blank)"
+            }
+        },
         "slackWebHookToken": {
             "type": "securestring",
             "metadata": {
@@ -381,7 +388,7 @@
                 "status": "Active",
                 "enableBatchedOperations": false,
                 "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
-                "forwardto": "cms-messages-draft",
+                "forwardto": "variables('servicebusName')/cms-messages-draft",
                 "templateLink": {
                     "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'ServiceBus/servicebus-topic-subscription.json')]",
                     "contentVersion": "1.0.0.0"
@@ -395,6 +402,9 @@
                     },
                     "serviceBusTopicSubscriptionName": {
                         "value": "[variables('SubscriptionsToCreate')[copyIndex()]]"
+                    },
+                    "subscriptionSqlFilter": {
+                        "value": "[parameters('cmsSubscriptionSqlFilter')]"
                     }
                 }
             },
