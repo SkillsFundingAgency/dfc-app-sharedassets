@@ -119,7 +119,7 @@
             "job-profile-refresh-draft"
         ],
         "SubscriptionsToCreate": [
-            "cms-app-test1"
+            "forward-to-draft"
         ]
     },
     "functions": [
