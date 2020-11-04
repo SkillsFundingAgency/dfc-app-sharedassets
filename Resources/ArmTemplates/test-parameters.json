@@ -41,6 +41,12 @@
         "emailAddressForAlerts": {
             "value": "test@test.com"
         },
+        "slackChannelForLiveServicesAlerts": {
+            "value": "__slackChannelForLiveServicesAlerts__"
+        },
+        "emailAddressForLiveServicesAlerts": {
+            "value": "__emailAddressForLiveServicesAlerts__"
+        },
         "enableAlerts": {
             "value": false
         }

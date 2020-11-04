@@ -74,6 +74,19 @@
                 "description": "An email address to send alerts to"
             }
         },
+        "slackChannelForLiveServicesAlerts": {
+            "type": "string",
+            "metadata": {
+                "description": "The slack channel to send alerts to"
+            }
+        },
+        "emailAddressForLiveServicesAlerts": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "An email address to send alerts to"
+            }
+        },
         "enableAlerts": {
             "type": "bool",
             "metadata": {
@@ -112,6 +125,8 @@
         "MonitoringAppInsightsName": "[concat(variables('ResourcePrefix'), '-mon-ai')]",
         "MonitoringFunctionAppName": "[concat(variables('ResourcePrefix'), '-mon-fa')]",
         "ActionGroupName": "[concat(variables('ResourcePrefix'), '-actgrp')]",
+        "ActionGroupNameLiveServices": "[concat(variables('ResourcePrefix'), '-live-services-actgrp')]",
+        "deployActionGroupNameLiveServices": "[equals(tolower(parameters('environment')), 'prd')]",
         "TopicsToCreate": [
             "cms-messages",
             "cms-messages-draft",
@@ -622,6 +637,36 @@
                 "[variables('MonitoringFunctionAppName')]"
             ]
         },
+        {
+            "name": "[variables('ActionGroupNameLiveServices')]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-05-01",
+            "condition": "[variables('deployActionGroupNameLiveServices')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/action-groups.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "actionGroupName": {
+                        "value": "[variables('ActionGroupNameLiveServices')]"
+                    },
+                    "enabled": {
+                        "value": "[parameters('enableAlerts')]"
+                    },
+                    "webHookUrl": {
+                        "value": "[concat('https://', variables('MonitoringFunctionAppName'), '.azurewebsites.net/api/MonitorAlert?code=', listkeys(concat(resourceId('Microsoft.Web/sites', variables('MonitoringFunctionAppName')), '/host/default'), '2018-11-01').functionKeys.default, '&channel=', parameters('slackChannelForLiveServicesAlerts'))]"
+                    },
+                    "emailAddress": {
+                        "value": "[parameters('emailAddressForLiveServicesAlerts')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[variables('MonitoringFunctionAppName')]"
+            ]
+        },        
         {
             "apiVersion": "2019-05-01",
             "name": "[concat(variables('AppServicePlanName'), '-CPUPercentage')]",

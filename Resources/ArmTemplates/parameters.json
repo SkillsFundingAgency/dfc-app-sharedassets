@@ -53,6 +53,12 @@
         "emailAddressForAlerts": {
             "value": "__emailAddressForAlerts__"
         },
+        "slackChannelForLiveServicesAlerts": {
+            "value": "__slackChannelForLiveServicesAlerts__"
+        },
+        "emailAddressForLiveServicesAlerts": {
+            "value": "__emailAddressForLiveServicesAlerts__"
+        },
         "enableAlerts": {
             "value": __EnableAzureMonitorAlerting__
         },
