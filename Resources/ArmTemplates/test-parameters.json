@@ -42,10 +42,16 @@
             "value": "test@test.com"
         },
         "slackChannelForLiveServicesAlerts": {
-            "value": "__slackChannelForLiveServicesAlerts__"
+            "value": "alerting-slack-channel"
         },
         "emailAddressForLiveServicesAlerts": {
-            "value": "__emailAddressForLiveServicesAlerts__"
+            "value": "test@test.com"
+        },
+        "slackChannelForDysacAlerts": {
+            "value": "alerting-slack-channel"
+        },
+        "emailAddressForDysacAlerts": {
+            "value": "test@test.com"
         },
         "enableAlerts": {
             "value": false

@@ -59,6 +59,12 @@
         "emailAddressForLiveServicesAlerts": {
             "value": "__emailAddressForLiveServicesAlerts__"
         },
+        "slackChannelForDysacAlerts": {
+            "value": "__slackChannelForDysacAlerts__"
+        },
+        "emailAddressForDysacAlerts": {
+            "value": "__emailAddressForDysacAlerts__"
+        },
         "enableAlerts": {
             "value": __EnableAzureMonitorAlerting__
         },

@@ -87,6 +87,19 @@
                 "description": "An email address to send alerts to"
             }
         },
+        "slackChannelForDysacAlerts": {
+            "type": "string",
+            "metadata": {
+                "description": "The slack channel to send alerts to"
+            }
+        },
+        "emailAddressForDysacAlerts": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "An email address to send alerts to"
+            }
+        },
         "enableAlerts": {
             "type": "bool",
             "metadata": {
@@ -127,6 +140,7 @@
         "ActionGroupName": "[concat(variables('ResourcePrefix'), '-actgrp')]",
         "ActionGroupNameLiveServices": "[concat(variables('ResourcePrefix'), '-live-services-actgrp')]",
         "deployActionGroupNameLiveServices": "[equals(tolower(parameters('environment')), 'prd')]",
+        "ActionGroupNameDysac":  "[concat(variables('ResourcePrefix'), '-dysac-actgrp')]",
         "TopicsToCreate": [
             "cms-messages",
             "cms-messages-draft",
@@ -660,6 +674,36 @@
                     },
                     "emailAddress": {
                         "value": "[parameters('emailAddressForLiveServicesAlerts')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[variables('MonitoringFunctionAppName')]"
+            ]
+        },        
+        {
+            "name": "[variables('ActionGroupNameDysac')]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-05-01",
+            "condition": "[variables('deployActionGroupNameLiveServices')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/action-groups.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "actionGroupName": {
+                        "value": "[variables('ActionGroupNameDysac')]"
+                    },
+                    "enabled": {
+                        "value": "[parameters('enableAlerts')]"
+                    },
+                    "webHookUrl": {
+                        "value": "[concat('https://', variables('MonitoringFunctionAppName'), '.azurewebsites.net/api/MonitorAlert?code=', listkeys(concat(resourceId('Microsoft.Web/sites', variables('MonitoringFunctionAppName')), '/host/default'), '2018-11-01').functionKeys.default, '&channel=', parameters('slackChannelForDysacAlerts'))]"
+                    },
+                    "emailAddress": {
+                        "value": "[parameters('emailAddressForDysacAlerts')]"
                     }
                 }
             },
