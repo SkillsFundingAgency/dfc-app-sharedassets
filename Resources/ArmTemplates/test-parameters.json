@@ -47,6 +47,12 @@
         "emailAddressForLiveServicesAlerts": {
             "value": "__emailAddressForLiveServicesAlerts__"
         },
+        "slackChannelForStaxAlerts": {
+            "value": "__slackChannelForStaxAlerts__"
+        },
+        "emailAddressForStaxAlerts": {
+            "value": "__emailAddressForStaxAlerts__"
+        },
         "enableAlerts": {
             "value": false
         }

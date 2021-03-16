@@ -87,6 +87,19 @@
                 "description": "An email address to send alerts to"
             }
         },
+        "slackChannelForStaxAlerts": {
+            "type": "string",
+            "metadata": {
+                "description": "The slack channel to send alerts to"
+            }
+        },
+        "emailAddressForStaxAlerts": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "An email address to send alerts to"
+            }
+        },
         "enableAlerts": {
             "type": "bool",
             "metadata": {
@@ -125,8 +138,10 @@
         "MonitoringAppInsightsName": "[concat(variables('ResourcePrefix'), '-mon-ai')]",
         "MonitoringFunctionAppName": "[concat(variables('ResourcePrefix'), '-mon-fa')]",
         "ActionGroupName": "[concat(variables('ResourcePrefix'), '-actgrp')]",
+        "ActionGroupNameSTAX": "[concat(variables('ResourcePrefix'), '-stax-actgrp')]",
         "ActionGroupNameLiveServices": "[concat(variables('ResourcePrefix'), '-live-services-actgrp')]",
         "deployActionGroupNameLiveServices": "[equals(tolower(parameters('environment')), 'prd')]",
+        "deployActionGroupNameStax": "[not(equals(tolower(parameters('environment')), 'oat'))]",
         "TopicsToCreate": [
             "cms-messages",
             "cms-messages-draft",
@@ -660,6 +675,36 @@
                     },
                     "emailAddress": {
                         "value": "[parameters('emailAddressForLiveServicesAlerts')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[variables('MonitoringFunctionAppName')]"
+            ]
+        },
+        {
+            "name": "[variables('ActionGroupNameSTAX')]",
+            "type": "Microsoft.Resources/deployments",
+            "condition": "[variables('deployActionGroupNameStax')]",
+            "apiVersion": "2019-05-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/action-groups.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "actionGroupName": {
+                        "value": "[variables('ActionGroupNameSTAX')]"
+                    },
+                    "enabled": {
+                        "value": "[parameters('enableAlerts')]"
+                    },
+                    "webHookUrl": {
+                        "value": "[concat('https://', variables('MonitoringFunctionAppName'), '.azurewebsites.net/api/MonitorAlert?code=', listkeys(concat(resourceId('Microsoft.Web/sites', variables('MonitoringFunctionAppName')), '/host/default'), '2018-11-01').functionKeys.default, '&channel=', parameters('slackChannelForSTAXAlerts'))]"
+                    },
+                    "emailAddress": {
+                        "value": "[parameters('emailAddressForStaxAlerts')]"
                     }
                 }
             },
