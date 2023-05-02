@@ -67,6 +67,9 @@
         },
         "deadLetterMessagesAlertThreshold": {
             "value": "__DeadLetterMessageAlertThreshold__"
-        }
+        },
+        "appInsightsInstrumentationKey": {
+          "value": "__appInsightsInstrumentationKey__" 
+        }   
     }
 }
