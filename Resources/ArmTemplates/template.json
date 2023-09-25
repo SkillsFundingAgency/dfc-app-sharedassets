@@ -2,6 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
     "contentVersion": "1.0.0.0",
     "parameters": {
+         "appInsightsInstrumentationKey":{
+            "type": "string"
+        },
         "apimResourceGroup": {
             "type": "string"
         },
@@ -122,7 +125,7 @@
         "apimDysacProductDisplayName": "Discover Skills and Careers",
         "addDevelopersGroupToProduct": "[equals(tolower(parameters('environment')), 'oat')]",
         "MonitoringAppServicePlanName": "[concat(variables('ResourcePrefix'), '-mon-asp')]",
-        "MonitoringAppInsightsName": "[concat(variables('ResourcePrefix'), '-mon-ai')]",
+        //"MonitoringAppInsightsName": "[concat(variables('ResourcePrefix'), '-mon-ai')]",
         "MonitoringFunctionAppName": "[concat(variables('ResourcePrefix'), '-mon-fa')]",
         "ActionGroupName": "[concat(variables('ResourcePrefix'), '-actgrp')]",
         "ActionGroupNameLiveServices": "[concat(variables('ResourcePrefix'), '-live-services-actgrp')]",
@@ -135,7 +138,8 @@
         ],
         "SubscriptionsToCreate": [
             "forward-to-draft"
-        ]
+        ],
+        "MonitoringAppInsightInstrumentationKey":"[parameters('appInsightsInstrumentationKey')]"
     },
     "functions": [
         {
@@ -545,19 +549,7 @@
                 "tier":"Dynamic"
             }
         },
-        {
-            "apiVersion": "2015-05-01",
-            "name": "[variables('MonitoringAppInsightsName')]",
-            "type": "Microsoft.Insights/components",
-            "location": "[resourceGroup().location]",
-            "kind": "web",
-            "tags": {
-                "[concat('hidden-link:', resourceId('Microsoft.Web/sites', variables('MonitoringAppInsightsName')))]": "Resource"
-            },
-            "properties": {
-                "Application_Type": "web"
-            }
-        },
+        
         {
             "name": "[variables('MonitoringFunctionAppName')]",
             "apiVersion": "2018-11-01",
@@ -565,8 +557,7 @@
             "location": "[resourceGroup().location]",
             "kind": "functionapp",
             "dependsOn": [
-                "[variables('MonitoringAppServicePlanName')]",
-                "[variables('MonitoringAppInsightsName')]"
+                "[variables('MonitoringAppServicePlanName')]"
             ],
             "properties": {
                 "httpsOnly": true,
@@ -574,7 +565,7 @@
                     "appSettings": [
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                            "value": "[reference(concat('microsoft.insights/components/', variables('MonitoringAppInsightsName'))).InstrumentationKey]"
+                            "value": "[variables('MonitoringAppInsightInstrumentationKey')]"
                         },
                         {
                             "name": "AzureWebJobsStorage",
@@ -610,355 +601,6 @@
                         }
                     ]
                 }
-            }
-        },
-        {
-            "name": "[variables('ActionGroupName')]",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-05-01",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/action-groups.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "actionGroupName": {
-                        "value": "[variables('ActionGroupName')]"
-                    },
-                    "enabled": {
-                        "value": "[parameters('enableAlerts')]"
-                    },
-                    "webHookUrl": {
-                        "value": "[concat('https://', variables('MonitoringFunctionAppName'), '.azurewebsites.net/api/MonitorAlert?code=', listkeys(concat(resourceId('Microsoft.Web/sites', variables('MonitoringFunctionAppName')), '/host/default'), '2018-11-01').functionKeys.default, '&channel=', parameters('slackChannelForAlerts'))]"
-                    },
-                    "emailAddress": {
-                        "value": "[parameters('emailAddressForAlerts')]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('MonitoringFunctionAppName')]"
-            ]
-        },
-        {
-            "name": "[variables('ActionGroupNameLiveServices')]",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2019-05-01",
-            "condition": "[variables('deployActionGroupNameLiveServices')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/action-groups.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "actionGroupName": {
-                        "value": "[variables('ActionGroupNameLiveServices')]"
-                    },
-                    "enabled": {
-                        "value": "[parameters('enableAlerts')]"
-                    },
-                    "webHookUrl": {
-                        "value": "[concat('https://', variables('MonitoringFunctionAppName'), '.azurewebsites.net/api/MonitorAlert?code=', listkeys(concat(resourceId('Microsoft.Web/sites', variables('MonitoringFunctionAppName')), '/host/default'), '2018-11-01').functionKeys.default, '&channel=', parameters('slackChannelForLiveServicesAlerts'))]"
-                    },
-                    "emailAddress": {
-                        "value": "[parameters('emailAddressForLiveServicesAlerts')]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('MonitoringFunctionAppName')]"
-            ]
-        },        
-        {
-            "apiVersion": "2019-05-01",
-            "name": "[concat(variables('AppServicePlanName'), '-CPUPercentage')]",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/metric-alerts.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "enabled": {
-                        "value": "[parameters('enableAlerts')]"
-                    },
-                    "alertName": {
-                        "value": "[concat(variables('AppServicePlanName'), '-metric-CPUPercentage')]"
-                    },
-                    "alertSeverity": {
-                        "value": 3
-                    },
-                    "metricName": {
-                        "value": "CpuPercentage"
-                    },
-                    "operator": {
-                        "value": "GreaterThanOrEqual"
-                    },
-                    "threshold": {
-                        "value": "75"
-                    },
-                    "aggregation": {
-                        "value": "Average"
-                    },
-                    "windowSize": {
-                        "value": "PT5M"
-                    },
-                    "evaluationFrequency": {
-                        "value": "PT1M"
-                    },
-                    "actionGroupName": {
-                        "value": "[variables('ActionGroupName')]"
-                    },
-                    "resourceId": {
-                        "value": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('ActionGroupName')]",
-                "[variables('AppServicePlanName')]"
-            ]
-        },
-        {
-            "apiVersion": "2019-05-01",
-            "name": "[concat(variables('AppServicePlanName'), '-MemoryPercentage')]",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/metric-alerts.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "enabled": {
-                        "value": "[parameters('enableAlerts')]"
-                    },
-                    "alertName": {
-                        "value": "[concat(variables('AppServicePlanName'), '-metric-MemoryPercentage')]"
-                    },
-                    "alertSeverity": {
-                        "value": 3
-                    },
-                    "metricName": {
-                        "value": "MemoryPercentage"
-                    },
-                    "operator": {
-                        "value": "GreaterThanOrEqual"
-                    },
-                    "threshold": {
-                        "value": "75"
-                    },
-                    "aggregation": {
-                        "value": "Average"
-                    },
-                    "windowSize": {
-                        "value": "PT5M"
-                    },
-                    "evaluationFrequency": {
-                        "value": "PT1M"
-                    },
-                    "actionGroupName": {
-                        "value": "[variables('ActionGroupName')]"
-                    },
-                    "resourceId": {
-                        "value": "[resourceId('Microsoft.Web/serverFarms', variables('AppServicePlanName'))]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('ActionGroupName')]",
-                "[variables('AppServicePlanName')]"
-            ]
-        },
-        {
-            "apiVersion": "2019-05-01",
-            "name": "[concat(parameters('CosmosDbName'), '-Conflicts')]",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/metric-alerts.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "enabled": {
-                        "value": "[parameters('enableAlerts')]"
-                    },
-                    "alertName": {
-                        "value": "[concat(parameters('CosmosDbName'), '-metric-conflicts')]"
-                    },
-                    "alertSeverity": {
-                        "value": 3
-                    },
-                    "metricName": {
-                        "value": "TotalRequestUnits"
-                    },
-                    "operator": {
-                        "value": "GreaterThan"
-                    },
-                    "threshold": {
-                        "value": "0"
-                    },
-                    "dimensions": {
-                        "value": [
-                            {
-                                "name": "StatusCode",
-                                "operator": "Include",
-                                "values": [ "429" ]
-                            }
-                        ]
-                    },
-                    "aggregation": {
-                        "value": "Average"
-                    },
-                    "windowSize": {
-                        "value": "PT5M"
-                    },
-                    "evaluationFrequency": {
-                        "value": "PT1M"
-                    },
-                    "actionGroupName": {
-                        "value": "[variables('ActionGroupName')]"
-                    },
-                    "resourceId": {
-                        "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('CosmosDbName'))]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('ActionGroupName')]",
-                "[variables('AppServicePlanName')]"
-            ]
-        },
-        {
-            "apiVersion": "2019-05-01",
-            "name": "[dfc.truncateDeploymentName(concat(variables('servicebusName'), '-', variables('TopicsToCreate')[copyIndex()],'-active-msgs'))]",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/metric-alerts.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "enabled": {
-                        "value": "[parameters('enableAlerts')]"
-                    },
-                    "alertName": {
-                        "value": "[concat(variables('servicebusName'), '-', variables('TopicsToCreate')[copyIndex()],'-active-msgs')]"
-                    },
-                    "alertSeverity": {
-                        "value": 3
-                    },
-                    "metricName": {
-                        "value": "ActiveMessages"
-                    },
-                    "operator": {
-                        "value": "GreaterThan"
-                    },
-                    "threshold": {
-                        "value": "[parameters('activeMessagesAlertThreshold')]"
-                    },
-                    "dimensions": {
-                        "value": [
-                            {
-                                "name": "EntityName",
-                                "operator": "Include",
-                                "values": [ "[variables('TopicsToCreate')[copyIndex()]]" ]
-                            }
-                        ]
-                    },
-                    "aggregation": {
-                        "value": "Average"
-                    },
-                    "windowSize": {
-                        "value": "PT5M"
-                    },
-                    "evaluationFrequency": {
-                        "value": "PT1M"
-                    },
-                    "actionGroupName": {
-                        "value": "[variables('ActionGroupName')]"
-                    },
-                    "resourceId": {
-                        "value": "[resourceId('Microsoft.ServiceBus/namespaces', variables('servicebusName'))]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('ActionGroupName')]",
-                "topicCopy"
-            ],
-            "copy": {
-                "name": "activeMessageAklertCopy",
-                "count": "[length(variables('TopicsToCreate'))]"
-            }
-        },
-        {
-            "apiVersion": "2019-05-01",
-            "name": "[dfc.truncateDeploymentName(concat(variables('servicebusName'), '-', variables('TopicsToCreate')[copyIndex()],'-dlq-msgs'))]",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'), 'Application-Insights/metric-alerts.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "enabled": {
-                        "value": "[parameters('enableAlerts')]"
-                    },
-                    "alertName": {
-                        "value": "[concat(variables('servicebusName'), '-', variables('TopicsToCreate')[copyIndex()],'-dlq-msgs')]"
-                    },
-                    "alertSeverity": {
-                        "value": 3
-                    },
-                    "metricName": {
-                        "value": "DeadletteredMessages"
-                    },
-                    "operator": {
-                        "value": "GreaterThan"
-                    },
-                    "threshold": {
-                        "value": "[parameters('deadLetterMessagesAlertThreshold')]"
-                    },
-                    "dimensions": {
-                        "value": [
-                            {
-                                "name": "EntityName",
-                                "operator": "Include",
-                                "values": [ "[variables('TopicsToCreate')[copyIndex()]]" ]
-                            }
-                        ]
-                    },
-                    "aggregation": {
-                        "value": "Average"
-                    },
-                    "windowSize": {
-                        "value": "PT5M"
-                    },
-                    "evaluationFrequency": {
-                        "value": "PT1M"
-                    },
-                    "actionGroupName": {
-                        "value": "[variables('ActionGroupName')]"
-                    },
-                    "resourceId": {
-                        "value": "[resourceId('Microsoft.ServiceBus/namespaces', variables('servicebusName'))]"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[variables('ActionGroupName')]",
-                "topicCopy"
-            ],
-            "copy": {
-                "name": "DeadLetterAlertCopy",
-                "count": "[length(variables('TopicsToCreate'))]"
             }
         }
     ]
