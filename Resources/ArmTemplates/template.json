@@ -573,7 +573,8 @@
                 "[concat('hidden-link:', resourceId('Microsoft.Web/sites', variables('MonitoringAppInsightsName')))]": "Resource"
             },
             "properties": {
-                "Application_Type": "web"
+                "Application_Type": "web",
+                "workspaceResourceId": "[resourceId(parameters('workspaceResourceGroup'), 'Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]"
             }
         },
         {
