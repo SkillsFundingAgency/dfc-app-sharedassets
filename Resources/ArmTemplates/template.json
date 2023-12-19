@@ -106,6 +106,12 @@
             "metadata": {
                 "description": "The threshold of active messages in a topic that causes alerts to fire"
             }
+        },
+        "workspaceName": {
+            "type": "string"
+        },
+        "workspaceResourceGroup": {
+            "type": "string"
         }
     },
     "variables": {
@@ -446,6 +452,12 @@
                     },
                     "productDisplayName": {
                         "value": "[variables('apimJobProfilesProductDisplayName')]"
+                    },
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "workspaceResourceGroup": {
+                        "value": "[parameters('workspaceResourceGroup')]"
                     }
                 }
             }
@@ -500,6 +512,12 @@
                     },
                     "productDisplayName": {
                         "value": "[variables('apimDysacProductDisplayName')]"
+                    },
+                    "workspaceName": {
+                        "value": "[parameters('workspaceName')]"
+                    },
+                    "workspaceResourceGroup": {
+                        "value": "[parameters('workspaceResourceGroup')]"
                     }
                 }
             }
