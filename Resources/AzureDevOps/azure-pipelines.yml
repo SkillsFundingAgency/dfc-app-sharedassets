@@ -1,5 +1,5 @@
 variables:
-    ArmTemplateRoot: '$(Build.SourcesDirectory)\Resources\ArmTemplates' 
+    ArmTemplateRoot: '$(Build.SourcesDirectory)\Resources\ArmTemplates'
     ApimPolicyRoot: '$(Build.SourcesDirectory)\Resources\ApimPolicies'
 
 resources:
@@ -25,6 +25,7 @@ jobs:
   - template: AzureDevOpsTemplates/Build/StepTemplates/dfc-arm-build.yml@dfc-devops
     parameters:
       ArmTemplateRoot: $(ArmTemplateRoot)
+      SolutionBaseName: Azure
 
   - task: CopyFiles@2
     displayName: 'Copy APIM policies to staging'
