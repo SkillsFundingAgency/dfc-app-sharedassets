@@ -163,40 +163,8 @@
     ],
     "resources": [
         {
-            "name": "appSharedCosmosAccount",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2017-05-10",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('BuildingBlocksDfcBaseUrl'),'cosmos-db.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "cosmosDbName": {
-                        "value": "[parameters('cosmosDbName')]"
-                    },
-                    "cosmosApiType": {
-                        "value": "SQL"
-                    },
-                    "defaultConsistencyLevel": {
-                        "value": "Strong"
-                    },
-                    "additionalIpAddresses": {
-                        "value": "[parameters('aseOutboundIpAddress')]"
-                    },
-                    "allowConnectionsFromAzureDataCenters": {
-                        "value": false
-                    }
-                }
-            }
-        },
-        {
             "name": "appSharedCosmosDatabase",
             "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "appSharedCosmosAccount"
-            ],
             "apiVersion": "2017-05-10",
             "properties": {
                 "mode": "Incremental",
@@ -457,7 +425,7 @@
                         "value": "By clicking confirm, you are agreeing to the conditions in the Code Of Connection"
                     },
                     "productTerms": {
-                        "value": "By subscribing to this API, you are agreeing to the conditions in the Code Of Connection" 
+                        "value": "By subscribing to this API, you are agreeing to the conditions in the Code Of Connection"
                     }
                 }
             }
@@ -656,7 +624,7 @@
             "dependsOn": [
                 "[variables('MonitoringFunctionAppName')]"
             ]
-        },        
+        },
         {
             "apiVersion": "2019-05-01",
             "name": "[concat(parameters('CosmosDbName'), '-Conflicts')]",
